@@ -7,6 +7,7 @@ git submodule sync
 git submodule update
 
 # local.conf won't exist until this step on first execution
+export PATH="/usr/bin:/bin:$PATH"
 source poky/oe-init-build-env
 
 CONFLINE="MACHINE = \"qemuarm64\""
