@@ -8,7 +8,7 @@ SRC_URI = "git://github.com/cu-ecen-aeld/assignments-3-and-later-gcalgaro.git;pr
 
 PV = "1.0+git${SRCPV}"
 # TODO: set to reference a specific commit hash in your assignment repo
-SRCREV = "0d0077e2bf2d8a8faafcd41da2e306dcc79de5b4"
+SRCREV = "ebfc5afcb79c67618bacfd00ba20d21b06bbc1c5"
 
 # This sets your staging directory based on WORKDIR, where WORKDIR is defined at 
 # https://docs.yoctoproject.org/ref-manual/variables.html?highlight=workdir#term-WORKDIR
@@ -18,16 +18,20 @@ S = "${WORKDIR}/git/server"
 
 # TODO: Add the aesdsocket application and any other files you need to install
 # See https://git.yoctoproject.org/poky/plain/meta/conf/bitbake.conf?h=kirkstone
-FILES:${PN} += "${bindir}/aesdsocket"
-FILES:${PN} += "${sysconfdir}/init.d/aesdsocket-start-stop.sh"
+INITSCRIPT_PACKAGES = "${PN}"
+INITSCRIPT_NAME:${PN} = "aesdsocket-start-stop"
+
+FILES:${PN} += "${bindir}/aesdsocket ${sysconfdir}/init.d/aesdsocket-start-stop"
 
 # TODO: customize these as necessary for any libraries you need for your application
 # (and remove comment)
+TARGET_CFLAGS += "-Wall -Wextra -pthread"
 TARGET_LDFLAGS += "-pthread -lrt"
+EXTRA_OEMAKE = "'CC=${CC}' 'CFLAGS=${TARGET_CFLAGS}' 'TARGET=aesdsocket'"
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 inherit update-rc.d
-INITSCRIPT_PACKAGES = "${PN}"
-INITSCRIPT_NAME:${PN} = "aesdsocket-start-stop.sh"
+
 
 do_configure () {
 	:
@@ -50,7 +54,6 @@ do_install () {
 
 	install -d ${D}${bindir}
 	install -m 0755 ${S}/aesdsocket ${D}${bindir}/
-
 	install -d ${D}${sysconfdir}/init.d
-	install -m 0755 ${S}/aesdsocket-start-stop ${D}${sysconfdir}/init.d/aesdsocket-start-stop.sh
-}
+	install -m 0755 ${S}/aesdsocket-start-stop ${D}${sysconfdir}/init.d/
+} 
