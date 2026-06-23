@@ -19,7 +19,7 @@ S = "${WORKDIR}/git/server"
 # TODO: Add the aesdsocket application and any other files you need to install
 # See https://git.yoctoproject.org/poky/plain/meta/conf/bitbake.conf?h=kirkstone
 FILES:${PN} += "${bindir}/aesdsocket"
-FILES:${PN} += "${sysconfdir}/init.d/aesdsocket-start-stop"
+FILES:${PN} += "${sysconfdir}/init.d/aesdsocket-start-stop.sh"
 
 # TODO: customize these as necessary for any libraries you need for your application
 # (and remove comment)
@@ -27,7 +27,7 @@ TARGET_LDFLAGS += "-pthread -lrt"
 
 inherit update-rc.d
 INITSCRIPT_PACKAGES = "${PN}"
-INITSCRIPT_NAME:${PN} = "aesdsocket-start-stop"
+INITSCRIPT_NAME:${PN} = "aesdsocket-start-stop.sh"
 
 do_configure () {
 	:
@@ -52,5 +52,5 @@ do_install () {
 	install -m 0755 ${S}/aesdsocket ${D}${bindir}/
 
 	install -d ${D}${sysconfdir}/init.d
-	install -m 0755 ${S}/aesdsocket-start-stop ${D}${sysconfdir}/init.d
+	install -m 0755 ${S}/aesdsocket-start-stop.sh ${D}${sysconfdir}/init.d
 }
